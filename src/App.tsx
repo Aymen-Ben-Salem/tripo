@@ -1,4 +1,5 @@
 import './App.css'
+import { Navbar } from './components/Navbar'
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
         <ellipse cx="1320" cy="-55" rx="375" ry="410" fill="url(#glow)" />
         <path filter="url(#grain)" opacity="0.035" d="M0 0h1672v941H0z" />
       </svg>
+      <Navbar />
     </main>
   )
 }

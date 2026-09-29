@@ -1,42 +1,64 @@
-import { Canvas } from '@react-three/fiber'
-import { Component, type ReactNode } from 'react'
-import { AssetThumbnail } from './AssetThumbnail'
-import type { ShowcaseAsset } from './assets'
+import { Canvas, useLoader, useThree } from '@react-three/fiber'
+import { Component, Suspense, useEffect, useMemo, type ReactNode } from 'react'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { assets, type ShowcaseAsset } from './assets'
+import { cameraFov, cameraPosition, createStudioLights, prepareModel, renderThumbnail } from './modelScene'
 
-class StageBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { failed: boolean }> {
-  state = { failed: false }
+type PosterReady = (id: string, src: string) => void
 
-  static getDerivedStateFromError() {
-    return { failed: true }
+type BoundaryProps = { children: ReactNode; fallback: ReactNode; resetKey?: string }
+type BoundaryState = { failed: boolean; resetKey?: string }
+
+class StageBoundary extends Component<BoundaryProps, BoundaryState> {
+  state: BoundaryState = { failed: false }
+  static getDerivedStateFromProps(props: BoundaryProps, state: BoundaryState) {
+    return props.resetKey !== state.resetKey ? { failed: false, resetKey: props.resetKey } : null
   }
-
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children
-  }
+  static getDerivedStateFromError() { return { failed: true } }
+  render() { return this.state.failed ? this.props.fallback : this.props.children }
 }
 
-// This renderer is the replacement point for the real model and its controls.
-export default function AssetStage({ asset }: { asset: ShowcaseAsset }) {
-  const fallback = <AssetThumbnail asset={asset} />
+function useModel(asset: ShowcaseAsset) {
+  const { scene } = useLoader(GLTFLoader, asset.modelUrl)
+  return useMemo(() => prepareModel(scene, asset), [scene, asset])
+}
 
+function Model({ asset }: { asset: ShowcaseAsset }) {
+  const model = useModel(asset)
+  return <primitive object={model} dispose={null} />
+}
+
+function ThumbnailCapture({ asset, onReady }: { asset: ShowcaseAsset; onReady: PosterReady }) {
+  const model = useModel(asset)
+  const { gl, invalidate } = useThree()
+  useEffect(() => {
+    const src = renderThumbnail(gl, model)
+    if (src) onReady(asset.id, src)
+    invalidate()
+  }, [asset.id, gl, invalidate, model, onReady])
+  return null
+}
+
+function StudioLights() {
+  const lights = useMemo(() => createStudioLights(), [])
+  return <primitive object={lights} />
+}
+
+export default function AssetStage({ asset, onPosterReady }: { asset: ShowcaseAsset; onPosterReady: PosterReady }) {
   return (
-    <StageBoundary fallback={fallback}>
-      <Canvas
-        camera={{ position: [0, 0, 5.8], fov: 38 }}
-        dpr={[1, 1.5]}
-        frameloop="demand"
+    <StageBoundary resetKey={asset.id} fallback={<span className="asset-stage__message">Preview unavailable</span>}>
+      <Canvas camera={{ position: cameraPosition, fov: cameraFov }} dpr={[1, 1.5]} frameloop="demand"
         gl={{ alpha: true, antialias: true }}
-        fallback={fallback}
-      >
-        <ambientLight intensity={0.8} />
-        <hemisphereLight args={['#f5e9da', '#25252c', 2]} />
-        <directionalLight position={[-3, 5, 4]} intensity={5} color="#fff0dc" />
-        <directionalLight position={[4, 1, -2]} intensity={7} color="#c2d7fa" />
-        <directionalLight position={[1, -3, 3]} intensity={2} color="#e5c4a1" />
-        <mesh rotation={[0.3, -0.4, -0.2]}>
-          <torusKnotGeometry args={[1.05, 0.29, 160, 24, ...asset.knot]} />
-          <meshStandardMaterial color={asset.color} metalness={asset.metalness} roughness={asset.roughness} />
-        </mesh>
+        fallback={<span className="asset-stage__message">3D preview unavailable</span>}>
+        <StudioLights />
+        <Suspense fallback={null}><Model asset={asset} /></Suspense>
+        {assets.map((entry) => (
+          <StageBoundary key={entry.id} fallback={null}>
+            <Suspense fallback={null}>
+              <ThumbnailCapture asset={entry} onReady={onPosterReady} />
+            </Suspense>
+          </StageBoundary>
+        ))}
       </Canvas>
     </StageBoundary>
   )

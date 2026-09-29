@@ -3,6 +3,7 @@ import type { ShowcaseAsset } from './assets'
 
 type AssetSwitcherProps = {
   assets: readonly ShowcaseAsset[]
+  posters: Record<string, string>
   selectedIndex: number
   onSelect: (index: number) => void
 }
@@ -15,11 +16,11 @@ function Chevron({ previous = false }: { previous?: boolean }) {
   )
 }
 
-export function AssetSwitcher({ assets, selectedIndex, onSelect }: AssetSwitcherProps) {
+export function AssetSwitcher({ assets, posters, selectedIndex, onSelect }: AssetSwitcherProps) {
   const step = (direction: number) => onSelect((selectedIndex + direction + assets.length) % assets.length)
 
   return (
-    <div className="asset-switcher" role="group" aria-label="Choose a product finish">
+    <div className="asset-switcher" role="group" aria-label="Choose a speaker">
       <button className="asset-switcher__arrow" type="button" aria-label="Previous asset" onClick={() => step(-1)}>
         <Chevron previous />
       </button>
@@ -33,7 +34,7 @@ export function AssetSwitcher({ assets, selectedIndex, onSelect }: AssetSwitcher
             aria-pressed={index === selectedIndex}
             onClick={() => onSelect(index)}
           >
-            <span className="asset-switcher__thumbnail"><AssetThumbnail asset={asset} /></span>
+            <span className="asset-switcher__thumbnail"><AssetThumbnail asset={asset} src={posters[asset.id]} /></span>
             <span className="asset-switcher__dot" aria-hidden="true" />
           </button>
         ))}

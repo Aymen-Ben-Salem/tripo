@@ -26,15 +26,26 @@ Git remote `origin`: https://github.com/Aymen-Ben-Salem/tripo.git
 
 ## Asset showcase
 
-The hero's temporary 3D scene uses Three.js and React Three Fiber. Its renderer
-loads separately from the page and only draws when the scene changes.
+The hero loads the supplied speaker models with Three.js and React Three Fiber.
+The renderer is loaded separately and draws only when the scene changes.
 
-- `src/features/assets/assets.ts` defines the three mock finishes.
-- `AssetShowcase.tsx` owns the selection shared by the preview and switcher.
-- `AssetStage.tsx` owns the camera, lighting, and temporary geometry. This is
-  where the supplied models and their interactions will be integrated.
-- `AssetSwitcher.tsx` contains the thumbnail and previous/next controls.
-- `AssetThumbnail.tsx` provides lightweight mock previews and the WebGL fallback.
+- `src/features/assets/assets.ts` maps speaker names, model URLs, and initial rotations.
+- `AssetShowcase.tsx` owns the shared selection and generated thumbnail images.
+- `AssetStage.tsx` loads and caches GLBs and provides the camera and lighting.
+- `modelScene.ts` centers and scales each model, and renders thumbnails using
+  the existing WebGL renderer instead of creating extra GPU contexts.
+- `AssetSwitcher.tsx` provides the thumbnail and previous/next controls.
 
-Mock geometry is intentionally static. Floating motion, manipulation, and real
-model loading will be added when the production assets are available.
+Web copies live in `public/models`. They contain about 190?202 thousand triangles
+per speaker. The supplied JPEG textures are retained byte-for-byte; source files
+in Downloads are untouched. The exports contain base-color textures, without
+separate metallic or roughness maps. Original material settings are retained.
+
+To rebuild the web copies from the three original filenames:
+
+```sh
+node scripts/prepare-models.mjs "path/to/source-directory"
+```
+
+Models are static for now. Floating motion and manipulation will be added in
+our next interaction step.

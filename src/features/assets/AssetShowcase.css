@@ -4,7 +4,17 @@
   right: 10%;
   width: 53%;
   height: 76%;
-  pointer-events: none;
+  touch-action: none;
+  user-select: none;
+}
+
+.asset-stage canvas {
+  outline: none;
+}
+
+.asset-stage canvas[data-keyboard-focus='true']:focus {
+  outline: 1px solid rgb(225 209 191 / 50%);
+  outline-offset: -4px;
 }
 
 .asset-stage__message {

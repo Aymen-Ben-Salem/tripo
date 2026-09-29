@@ -3,6 +3,7 @@ import { Component, Suspense, useEffect, useMemo, type ReactNode } from 'react'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { assets, type ShowcaseAsset } from './assets'
 import { cameraFov, cameraPosition, createStudioLights, prepareModel, renderThumbnail } from './modelScene'
+import { InteractiveModel } from './InteractiveModel'
 
 type PosterReady = (id: string, src: string) => void
 
@@ -25,7 +26,7 @@ function useModel(asset: ShowcaseAsset) {
 
 function Model({ asset }: { asset: ShowcaseAsset }) {
   const model = useModel(asset)
-  return <primitive object={model} dispose={null} />
+  return <InteractiveModel key={asset.id} model={model} />
 }
 
 function ThumbnailCapture({ asset, onReady }: { asset: ShowcaseAsset; onReady: PosterReady }) {

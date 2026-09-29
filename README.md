@@ -19,6 +19,7 @@ Edit `src/App.tsx` to start building the app.
 - `npm run preview` serves the production build locally.
 - `npm run lint` checks source code.
 - `npm run typecheck` checks TypeScript.
+- `npm test` verifies hover replay, drag ownership, rotation, and reduced motion.
 
 ## Repository
 
@@ -47,5 +48,15 @@ To rebuild the web copies from the three original filenames:
 node scripts/prepare-models.mjs "path/to/source-directory"
 ```
 
-Models are static for now. Floating motion and manipulation will be added in
-our next interaction step.
+Drag a speaker to rotate it. Pointer entry triggers a subtle 2.4-second nudge
+that settles completely and only replays after leaving and entering again.
+Dragging cancels the nudge and preserves the chosen orientation after release.
+Touch dragging is supported. Focus the preview and use arrow keys to rotate,
+or Home to reset. Reduced-motion preferences disable the hover nudge and
+rotation smoothing.
+
+`InteractiveModel.tsx` connects pointer/keyboard input to the scene. Its small
+state controller, `assetInteraction.ts`, is tested independently of WebGL.
+A stationary hit area keeps the movement itself from retriggering hover.
+Switching speakers resets the orientation. The canvas renders only while
+loading, interacting, or settling.

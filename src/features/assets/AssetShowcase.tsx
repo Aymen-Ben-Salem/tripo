@@ -15,7 +15,7 @@ export function AssetShowcase() {
 
   return (
     <>
-      <div className="asset-stage" aria-hidden="true">
+      <div className="asset-stage" role="group" aria-label={`${selectedAsset.name} 3D preview`}>
         <Suspense fallback={<span className="asset-stage__message">Loading preview</span>}>
           <AssetStage asset={selectedAsset} onPosterReady={onPosterReady} />
         </Suspense>

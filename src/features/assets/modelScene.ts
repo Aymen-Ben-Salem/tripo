@@ -1,5 +1,6 @@
 import { Box3, DirectionalLight, Group, HemisphereLight, PerspectiveCamera, Scene, SRGBColorSpace, Vector3, WebGLRenderTarget, type Object3D, type WebGLRenderer } from 'three'
 import type { ShowcaseAsset } from './assets'
+import { fitModelCamera, getRotationRadius } from './modelFraming.ts'
 
 export const cameraPosition: [number, number, number] = [0, 0, 5.8]
 export const cameraFov = 38
@@ -39,7 +40,7 @@ export function renderThumbnail(renderer: WebGLRenderer, model: Object3D) {
   const scene = new Scene()
   scene.add(model.clone(true), createStudioLights())
   const camera = new PerspectiveCamera(cameraFov, 1, 0.1, 100)
-  camera.position.set(...cameraPosition)
+  fitModelCamera(camera, getRotationRadius(model), 1)
   const target = new WebGLRenderTarget(size, size, { samples: 4 })
   target.texture.colorSpace = SRGBColorSpace
   const previousTarget = renderer.getRenderTarget()

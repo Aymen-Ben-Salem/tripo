@@ -23,3 +23,18 @@ Edit `src/App.tsx` to start building the app.
 ## Repository
 
 Git remote `origin`: https://github.com/Aymen-Ben-Salem/tripo.git
+
+## Asset showcase
+
+The hero's temporary 3D scene uses Three.js and React Three Fiber. Its renderer
+loads separately from the page and only draws when the scene changes.
+
+- `src/features/assets/assets.ts` defines the three mock finishes.
+- `AssetShowcase.tsx` owns the selection shared by the preview and switcher.
+- `AssetStage.tsx` owns the camera, lighting, and temporary geometry. This is
+  where the supplied models and their interactions will be integrated.
+- `AssetSwitcher.tsx` contains the thumbnail and previous/next controls.
+- `AssetThumbnail.tsx` provides lightweight mock previews and the WebGL fallback.
+
+Mock geometry is intentionally static. Floating motion, manipulation, and real
+model loading will be added when the production assets are available.

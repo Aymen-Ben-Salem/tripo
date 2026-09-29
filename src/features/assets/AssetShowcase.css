@@ -1,0 +1,112 @@
+.asset-stage {
+  position: absolute;
+  top: 15%;
+  right: 10%;
+  width: 53%;
+  height: 76%;
+  pointer-events: none;
+}
+
+.asset-stage > svg {
+  width: 100%;
+  height: 100%;
+  padding: 12%;
+}
+
+.asset-switcher {
+  --thumbnail-size: clamp(60px, 4.9vw, 82px);
+  position: absolute;
+  z-index: 2;
+  right: calc(var(--page-gutter) - 14px);
+  bottom: 4.5%;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.asset-switcher button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #d4d4ce;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.asset-switcher__arrow {
+  width: 40px;
+  height: var(--thumbnail-size);
+  transition: color 160ms ease;
+}
+
+.asset-switcher__arrow:hover {
+  color: #fff;
+}
+
+.asset-switcher__options {
+  display: flex;
+}
+
+.asset-switcher__option {
+  gap: 15px;
+}
+
+.asset-switcher__thumbnail {
+  display: grid;
+  place-items: center;
+  width: var(--thumbnail-size);
+  height: var(--thumbnail-size);
+  border: 1px solid transparent;
+  border-radius: 50%;
+  opacity: 0.5;
+  transition: opacity 160ms ease, border-color 160ms ease;
+}
+
+.asset-switcher__thumbnail svg {
+  width: 72%;
+  height: 72%;
+}
+
+.asset-switcher__option:hover .asset-switcher__thumbnail {
+  opacity: 0.85;
+}
+
+.asset-switcher__option[aria-pressed='true'] .asset-switcher__thumbnail {
+  border-color: rgb(210 207 199 / 43%);
+  opacity: 1;
+}
+
+.asset-switcher__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #5c5c59;
+}
+
+.asset-switcher__option[aria-pressed='true'] .asset-switcher__dot {
+  background: #d7d5cc;
+}
+
+@media (max-width: 760px) {
+  .asset-stage {
+    top: auto;
+    right: var(--page-gutter);
+    bottom: 130px;
+    width: 36vw;
+    height: 36vw;
+  }
+
+  .asset-switcher {
+    --thumbnail-size: 60px;
+    bottom: max(24px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asset-switcher__arrow,
+  .asset-switcher__thumbnail {
+    transition: none;
+  }
+}

@@ -8,10 +8,10 @@ type AssetSwitcherProps = {
   onSelect: (index: number) => void
 }
 
-function Chevron({ previous = false }: { previous?: boolean }) {
+function Arrow({ previous = false }: { previous?: boolean }) {
   return (
-    <svg width="12" height="20" viewBox="0 0 12 20" fill="none" aria-hidden="true">
-      <path d={previous ? 'M9 3 3 10l6 7' : 'm3 3 6 7-6 7'} stroke="currentColor" strokeWidth="1.2" />
+    <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
+      <path d={previous ? 'M17 8H3m5-5L3 8l5 5' : 'M3 8h14m-5-5 5 5-5 5'} stroke="currentColor" strokeWidth="1" />
     </svg>
   )
 }
@@ -21,9 +21,20 @@ export function AssetSwitcher({ assets, posters, selectedIndex, onSelect }: Asse
 
   return (
     <div className="asset-switcher" role="group" aria-label="Choose a speaker">
-      <button className="asset-switcher__arrow" type="button" aria-label="Previous asset" onClick={() => step(-1)}>
-        <Chevron previous />
-      </button>
+      <div className="asset-switcher__heading">
+        <div className="asset-switcher__count" aria-hidden="true">
+          <span>{String(selectedIndex + 1).padStart(2, '0')}</span>
+          <span className="asset-switcher__total">/{String(assets.length).padStart(2, '0')}</span>
+        </div>
+        <div className="asset-switcher__arrows">
+          <button className="asset-switcher__arrow" type="button" aria-label="Previous asset" onClick={() => step(-1)}>
+            <Arrow previous />
+          </button>
+          <button className="asset-switcher__arrow" type="button" aria-label="Next asset" onClick={() => step(1)}>
+            <Arrow />
+          </button>
+        </div>
+      </div>
       <div className="asset-switcher__options">
         {assets.map((asset, index) => (
           <button
@@ -35,13 +46,9 @@ export function AssetSwitcher({ assets, posters, selectedIndex, onSelect }: Asse
             onClick={() => onSelect(index)}
           >
             <span className="asset-switcher__thumbnail"><AssetThumbnail asset={asset} src={posters[asset.id]} /></span>
-            <span className="asset-switcher__dot" aria-hidden="true" />
           </button>
         ))}
       </div>
-      <button className="asset-switcher__arrow" type="button" aria-label="Next asset" onClick={() => step(1)}>
-        <Chevron />
-      </button>
       <span className="sr-only" role="status">{assets[selectedIndex].name}, {selectedIndex + 1} of {assets.length}</span>
     </div>
   )

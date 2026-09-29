@@ -2,6 +2,11 @@
   --page-gutter: clamp(24px, 3.7vw, 64px);
   --font-mono: ui-monospace, 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
   --font-sans: system-ui, sans-serif;
+  --font-display: 'Helvetica Neue', Arial, sans-serif;
+  --color-paper: #f3f1e9;
+  --color-muted: #aaa99f;
+  --color-accent: #c8c3a3;
+  --color-rule: rgb(200 195 163 / 20%);
   font-family: var(--font-sans);
   color: #f5f2ed;
   background: #101111;

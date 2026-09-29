@@ -1,5 +1,4 @@
 import './Navbar.css'
-import { ExploreLink } from './ExploreLink'
 
 const navigation = ['Product', 'Technology', 'Design', 'Sound']
 
@@ -18,7 +17,7 @@ export function Navbar() {
         ))}
       </nav>
 
-      <ExploreLink className="navbar__explore" />
+      <p className="navbar__hint">Click &amp; drag<br />to explore the form.</p>
     </header>
   )
 }
